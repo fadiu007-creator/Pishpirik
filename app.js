@@ -2,27 +2,28 @@
 const $ = id => document.getElementById(id);
 const SUITS = [{s:'♠',red:false},{s:'♥',red:true},{s:'♦',red:true},{s:'♣',red:false}];
 const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-let deck=[], hands=[[],[]], table=[], scores=[0,0], captured=[[],[]], turn=0, started=false, sound=false, roomChannel=null, online=false, playerIndex=0, roomCode='';
+let deck=[], hands=[[],[]], table=[], scores=[0,0], captured=[[],[]], turn=0, started=false, sound=false, roomChannel=null, online=false, playerIndex=0, roomCode='', vsComputer=false, aiTimer=null;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function makeDeck(){return shuffle(SUITS.flatMap((s,si)=>RANKS.map((r,ri)=>({id:si*13+ri,rank:r,value:ri,suit:s.s,red:s.red}))))}
 function cardHTML(c,clickable=false){return '<div class="card '+(c.red?'red':'')+'" '+(clickable?'role="button" tabindex="0" data-card="'+c.id+'" aria-label="'+c.rank+' '+c.suit+'"':'')+'><span class="corner">'+c.rank+'<br>'+c.suit+'</span><span>'+c.rank+'</span><span class="suit">'+c.suit+'</span><span class="corner bottom">'+c.rank+'<br>'+c.suit+'</span></div>'}
 function show(id){['home','lobby','game'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
-function startGame(){deck=makeDeck();hands=[[],[]];table=[];scores=[0,0];captured=[[],[]];turn=0;started=true;online=false;roomChannel=null;
+function startGame(mode='local'){if(aiTimer)clearTimeout(aiTimer);vsComputer=mode==='computer';deck=makeDeck();hands=[[],[]];table=[];scores=[0,0];captured=[[],[]];turn=0;started=true;online=false;roomChannel=null;
  // Deal four cards to each player and four cards face-up to table.
  for(let i=0;i<4;i++){hands[0].push(deck.pop());hands[1].push(deck.pop())}
- table=deck.splice(-4);$('gameMode').textContent='LOJË LOKALE';show('game');render();$('gameMessage').textContent='Lojtari 1, zgjedhe një letër.'}
+ table=deck.splice(-4);$('gameMode').textContent=vsComputer?'KUNDËR KOMPJUTERIT':'LOJË LOKALE';show('game');render();$('gameMessage').textContent=vsComputer?'Ti je Lojtari 1. Bëje lëvizjen e parë.':'Lojtari 1, zgjedhe një letër.'}
 function render(){if(!started)return;
- $('turnLabel').textContent=turn===0?'Radha e Lojtarit 1':'Radha e Lojtarit 2';
- $('handTitle').textContent='Letrat e Lojtarit '+(turn+1);
+ $('turnLabel').textContent=vsComputer?(turn===0?'Radha jote':'Kompjuteri po mendon…'):(turn===0?'Radha e Lojtarit 1':'Radha e Lojtarit 2');
+ $('handTitle').textContent=vsComputer?'Letrat e tua':'Letrat e Lojtarit '+(turn+1);
  $('remaining').textContent=deck.length+hands[0].length+hands[1].length;
  $('tableCount').textContent=table.length+' '+(table.length===1?'letër':'letra');
  $('tableCards').innerHTML=table.length?table.map(c=>cardHTML(c)).join(''):'<span class="empty-table">Tavolina është bosh</span>';
- $('handCards').innerHTML=hands[turn].map(c=>cardHTML(c,true)).join('');
+ $('handCards').innerHTML=(vsComputer?hands[0]:hands[turn]).map(c=>cardHTML(c,true)).join('');
+ if(vsComputer&&turn===1){$('handCards').innerHTML=hands[1].map(()=>'<div class="card back-card">✦<span class="suit">♠</span></div>').join('');}
  [0,1].forEach(i=>{const el=$('score'+i);el.querySelector('span').textContent='Lojtari '+(i+1);el.querySelector('b').textContent=scores[i]});
  $('handCards').querySelectorAll('[data-card]').forEach(el=>{el.addEventListener('click',()=>play(Number(el.dataset.card)));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();play(Number(el.dataset.card))}})});
 }
-function play(id){if(!started)return;const idx=hands[turn].findIndex(c=>c.id===id);if(idx<0)return;const card=hands[turn].splice(idx,1)[0];let msg='Letra u la në tavolinë.';
+function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!fromAI)return;const idx=hands[turn].findIndex(c=>c.id===id);if(idx<0)return;const card=hands[turn].splice(idx,1)[0];let msg='Letra u la në tavolinë.';
  const isPišti=table.length===1&&table[0].value===card.value;
  if(table.length&& (table[table.length-1].value===card.value||card.rank==='J')){
    const taken=[...table,card];captured[turn].push(...taken);table=[];
@@ -37,8 +38,15 @@ function play(id){if(!started)return;const idx=hands[turn].findIndex(c=>c.id===i
     if(scores[0]===scores[1])msg+=' Loja përfundoi barazim!';else msg+=' Fiton Lojtari '+(scores[0]>scores[1]?1:2)+'!';started=false;renderFinal(msg);return}
  }
  $('gameMessage').textContent=msg;render();
+ if(vsComputer&&turn===1&&started){if(aiTimer)clearTimeout(aiTimer);aiTimer=setTimeout(computerMove,650)}
 }
 function renderFinal(msg){render();$('turnLabel').textContent='Loja përfundoi';$('handTitle').textContent='Rezultati final';$('handCards').innerHTML='<div class="rules"><b>'+msg+'</b><br>Lojtari 1: '+scores[0]+' pikë · Lojtari 2: '+scores[1]+' pikë</div>';$('gameMessage').textContent='Shtype Rifillo për një lojë të re.';toast(scores[0]===scores[1]?'Barazim!':'Fituesi: Lojtari '+(scores[0]>scores[1]?1:2))}
+function computerMove(){
+ if(!started||!vsComputer||turn!==1)return;
+ const hand=hands[1];if(!hand.length)return;
+ const ranked=hand.map(card=>{const pi=table.length===1&&table[0].value===card.value;const capture=table.length>0&&(table[table.length-1].value===card.value||card.rank==='J');return {card,score:pi?100:(capture?50:0)+(card.rank==='J'?20:0)}}).sort((a,b)=>b.score-a.score);
+ play(ranked[0].card.id,true);
+}
 function setupOnline(){show('lobby');$('onlineStatus').textContent='Për online real, plotëso Supabase URL dhe anon key te config.js dhe ekzekuto SQL nga README.'}
 function makeCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 async function onlineAction(create){
@@ -58,9 +66,9 @@ async function onlineAction(create){
   if(!create)await roomChannel.send({type:'broadcast',event:'hello',payload:{name}});
  }catch(e){$('onlineStatus').textContent='Lidhja dështoi. Kontrollo Supabase URL/key dhe politikat e Realtime.';toast('Gabim në lidhje online.')}
 }
-$('localBtn').addEventListener('click',startGame);$('onlineBtn').addEventListener('click',setupOnline);$('backBtn').addEventListener('click',()=>show('home'));
+$('computerBtn').addEventListener('click',()=>startGame('computer'));$('localBtn').addEventListener('click',()=>startGame('local'));$('onlineBtn').addEventListener('click',setupOnline);$('backBtn').addEventListener('click',()=>show('home'));
 $('createRoom').addEventListener('click',()=>onlineAction(true));$('joinRoom').addEventListener('click',()=>onlineAction(false));
 $('exitBtn').addEventListener('click',()=>{started=false;if(roomChannel){roomChannel.unsubscribe();roomChannel=null}show('home')});
-$('newGameBtn').addEventListener('click',startGame);
+$('newGameBtn').addEventListener('click',()=>startGame(vsComputer?'computer':'local'));
 $('soundBtn').addEventListener('click',()=>{sound=!sound;$('soundBtn').textContent='♫ Tingulli: '+(sound?'ndezur':'fikur');toast(sound?'Tingulli u aktivizua (efektet audio do të shtohen).':'Tingulli u fik.')});
 })();
