@@ -4,6 +4,7 @@ A responsive Albanian-language Pishpirik card-game MVP. Static frontend, designe
 
 ## What's included
 - Playable two-player, pass-and-play game on one device.
+- Single-player mode against a basic computer opponent that prefers captures and Pishpirik opportunities.
 - Shuffled 52-card deck, four-card hands, face-up table, capture turns and a Pishpirik bonus (+10 when capturing a single table card of the same rank).
 - Jack captures the table and scores 1 point.
 - Scoreboard, responsive mobile layout, keyboard-accessible cards, restart and end-of-game summary.
