@@ -59,3 +59,12 @@
 .play-animation.pishpirik-animation.play-animation-show{animation:revealPishpirik 2s ease both}
 .play-animation.pishpirik-animation .flip-inner{animation:flipPishpirik 2s cubic-bezier(.35,.05,.2,1) both}
 .play-animation.pishpirik-animation .play-animation-label{animation:labelPishpirik 2s ease both}
+
+
+/* Captures travel toward the side of the player who takes the pile. */
+.play-animation.capture-to-bottom .flip-card{animation:finishCaptureBottom 1s ease both}
+.play-animation.capture-to-top .flip-card{animation:finishCaptureTop 1s ease both}
+.play-animation.pishpirik-animation.capture-to-bottom .flip-card{animation:finishCaptureBottom 2s ease both}
+.play-animation.pishpirik-animation.capture-to-top .flip-card{animation:finishCaptureTop 2s ease both}
+@keyframes finishCaptureBottom{0%,35%{transform:translateY(0) scale(1)}100%{transform:translateY(30vh) scale(.72)}}
+@keyframes finishCaptureTop{0%,35%{transform:translateY(0) scale(1)}100%{transform:translateY(-30vh) scale(.72)}}
