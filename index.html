@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0d3b2e"><meta name="description" content="Pishpirik — luaj letra me shoqni, lokalisht ose online.">
-<title>Pishpirik — Loja me letra</title><link rel="stylesheet" href="style.css?v=20261029-7">
+<title>Pishpirik — Loja me letra</title><link rel="stylesheet" href="style.css?v=20261029-8">
 </head>
 <body>
 <header class="top"><a class="brand" href="./"><span class="mark">♠</span><span>Pishpirik<small>LOJA ME LETRA</small></span></a><button id="soundBtn" class="ghost" aria-label="Tingulli">♫ Tingulli: fikur</button></header>
@@ -17,12 +17,13 @@
 <section id="game" class="game hidden">
 <div class="game-head"><button class="back" id="exitBtn">← Dalje</button><div><span class="pill" id="gameMode">LOJË LOKALE</span><div id="turnLabel" class="turn">Radha e Lojtarit 1</div></div><button class="ghost" id="newGameBtn">Rifillo ↻</button></div>
 <div class="scoreboard"><div class="score" id="score0"><span>Lojtari 1</span><b>0</b><small>pikë</small></div><div class="deck-count"><span id="remaining">52</span><small>letra në lojë</small></div><div class="score" id="score1"><span>Lojtari 2</span><b>0</b><small>pikë</small></div></div>
+<div class="player-zone opponent-zone"><div class="player-figure"><span class="avatar">🤖</span><span class="player-name" id="opponentName">Kundërshtari</span><small id="opponentCardCount">4 letra</small></div><div id="opponentCards" class="cards opponent-cards" aria-label="Letrat e kundërshtarit"></div></div>
 <div class="table-area"><div class="table-caption">TAVOLINA <span id="tableCount">0 letra</span></div><div id="tableCards" class="cards table-cards"><span class="empty-table">Tavolina është bosh</span></div><div id="lastCapture" class="capture-note"></div></div>
-<div class="hand-area"><div class="hand-label"><span id="handTitle">Letrat e Lojtarit 1</span><small>Zgjedhe një letër</small></div><div id="handCards" class="cards hand-cards"></div><div id="gameMessage" class="game-message">Zgjedhe letrën për me lujt.</div></div>
+<div class="hand-area"><div class="player-figure my-figure"><span class="avatar">🧑</span><span class="player-name" id="myPlayerName">Ti</span><small id="myCardCount">4 letra</small></div><div class="hand-label"><span id="handTitle">Letrat e tua</span><small>Zgjedhe një letër</small></div><div id="handCards" class="cards hand-cards"></div><div id="gameMessage" class="game-message">Zgjedhe letrën për me lujt.</div></div>
 <div class="game-footer"><span>♠ ♥ ♦ ♣</span><span>Pishpirik · Loja klasike</span></div>
 </section>
 </main>
 <div id="playAnimation" class="play-animation" aria-hidden="true"></div>
 <div id="toast" class="toast" role="status"></div>
-<script src="config.js?v=20261029-4"></script><script src="app.js?v=20261029-9"></script>
+<script src="config.js?v=20261029-4"></script><script src="app.js?v=20261029-10"></script>
 </body></html>
