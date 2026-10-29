@@ -19,8 +19,15 @@ function render(){if(!started)return;
  $('remaining').textContent=deck.length+hands[0].length+hands[1].length;
  $('tableCount').textContent=table.length+' '+(table.length===1?'letër':'letra');
  $('tableCards').innerHTML=table.length?('<div class="table-pile"><div class="pile-count">'+table.length+' '+(table.length===1?'letër në grumbull':'letra në grumbull')+'</div>'+cardHTML(table[table.length-1])+'</div>'):'<span class="empty-table">Tavolina është bosh</span>';
- $('handCards').innerHTML=(vsComputer?hands[0]:hands[turn]).map(c=>cardHTML(c,true)).join('');
- if(vsComputer&&turn===1){$('handCards').innerHTML=hands[1].map(()=>'<div class="card back-card">✦<span class="suit">♠</span></div>').join('');}
+ // Keep the opponent's hidden cards at the top and the human player's hand at the bottom.
+ const opponent=vsComputer?1:1-turn;
+ const myHand=vsComputer?hands[0]:hands[turn];
+ $('opponentName').textContent=vsComputer?'Kompjuteri':'Lojtari '+(opponent+1);
+ $('myPlayerName').textContent=vsComputer?'Ti':'Lojtari '+(turn+1);
+ $('opponentCardCount').textContent=hands[opponent].length+' '+(hands[opponent].length===1?'letër':'letra');
+ $('myCardCount').textContent=myHand.length+' '+(myHand.length===1?'letër':'letra');
+ $('opponentCards').innerHTML=hands[opponent].map(()=>'<div class="card back-card" aria-hidden="true"><span>✦</span><span class="suit">♠</span></div>').join('');
+ $('handCards').innerHTML=myHand.map(c=>cardHTML(c,true)).join('');
  [0,1].forEach(i=>{const el=$('score'+i);el.querySelector('span').textContent='Lojtari '+(i+1);el.querySelector('b').textContent=scores[i]});
  $('handCards').querySelectorAll('[data-card]').forEach(el=>{el.addEventListener('click',()=>play(Number(el.dataset.card)));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();play(Number(el.dataset.card))}})});
 }
