@@ -25,7 +25,8 @@ function render(){if(!started)return;
 }
 function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!fromAI)return;const idx=hands[turn].findIndex(c=>c.id===id);if(idx<0)return;const card=hands[turn].splice(idx,1)[0];let msg='Letra u la në tavolinë.';
  const isPišti=table.length===1&&table[0].value===card.value;
- if(table.length&&table[table.length-1].value===card.value){
+ const isJack=card.rank==='J';
+ if(table.length&&(isJack||table[table.length-1].value===card.value)){
    const taken=[...table,card];captured[turn].push(...taken);table=[];
    const points=isPišti?10:0;scores[turn]+=points;
    msg='Lojtari '+(turn+1)+' i mori krejt letrat në tavolinë!'+(isPišti?' PISHPIRIK! +10 pikë.':'');
@@ -55,7 +56,7 @@ function computerMove(){
  // Prefer Pishpirik first, then a capture; otherwise play a random card.
  const ranked=hand.map(card=>{
    const pishpirik=table.length===1&&table[0].value===card.value;
-   const captures=table.length>0&&table[table.length-1].value===card.value;
+   const captures=table.length>0&&(card.rank==='J'||table[table.length-1].value===card.value);
    const score=(pishpirik?1000:0)+(captures?100:0)+Math.random();
    return {card,score};
  }).sort((a,b)=>b.score-a.score);
