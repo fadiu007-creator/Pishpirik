@@ -31,7 +31,7 @@ function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!from
    const countedCards=taken.filter(c=>['10','J','Q','K','A'].includes(c.rank)).length;
    const pishpirikBonus=isPišti?10:0;
    const points=countedCards+pishpirikBonus;scores[turn]+=points;
-   msg='Lojtari '+(turn+1)+' i mori krejt letrat në tavolinë! +'+points+' pikë ('+countedCards+' letra të numëruara'+(isPišti+', Pishpirik +10':'')+').';
+   msg='Lojtari '+(turn+1)+' i mori krejt letrat në tavolinë! +'+points+' pikë ('+countedCards+' letra të numëruara'+(isPišti?', Pishpirik +10':'')+').';
    $('lastCapture').textContent=isPišti?'✨ PISHPIRIK! +'+points+' pikë':('+'+points+' pikë');
  }else{table.push(card);$('lastCapture').textContent=''}
  turn=1-turn;
