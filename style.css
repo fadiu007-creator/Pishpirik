@@ -18,6 +18,6 @@
 .hand-area{display:grid;grid-template-columns:105px minmax(0,1fr);column-gap:14px;align-items:center}
 .my-figure{grid-row:1 / span 2;align-self:center}
 .hand-label{grid-column:2;margin-bottom:8px}
-.hand-cards{grid-column:1 / -1;padding:8px 0 4px}
+.hand-cards{grid-column:2;padding:8px 0 4px;justify-content:flex-start}
 .game-message{grid-column:1 / -1}
 @media(max-width:560px){.player-zone{gap:7px;padding:10px 8px}.player-figure{flex-basis:76px}.player-figure .avatar{width:39px;height:39px;font-size:22px}.player-figure .player-name{font-size:11px}.opponent-cards{gap:4px;min-width:0}.opponent-cards .card{width:32px;height:47px;font-size:14px}.opponent-cards .back-card .suit{font-size:12px}.hand-area{grid-template-columns:76px minmax(0,1fr);column-gap:8px}.my-figure{grid-row:1 / span 2}.hand-label{grid-column:2;display:flex;flex-direction:column;gap:3px}.hand-cards{gap:5px}.player-zone .cards{flex-wrap:nowrap}}
