@@ -28,14 +28,16 @@ function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!from
  const isJack=card.rank==='J';
  if(table.length&&(isJack||table[table.length-1].value===card.value)){
    const taken=[...table,card];captured[turn].push(...taken);table=[];
-   const points=isPišti?10:0;scores[turn]+=points;
-   msg='Lojtari '+(turn+1)+' i mori krejt letrat në tavolinë!'+(isPišti?' PISHPIRIK! +10 pikë.':'');
-   $('lastCapture').textContent=isPišti?'✨ PISHPIRIK! +10 pikë':'Grumbulli u mor';
+   const countedCards=taken.filter(c=>['10','J','Q','K','A'].includes(c.rank)).length;
+   const pishpirikBonus=isPišti?10:0;
+   const points=countedCards+pishpirikBonus;scores[turn]+=points;
+   msg='Lojtari '+(turn+1)+' i mori krejt letrat në tavolinë! +'+points+' pikë ('+countedCards+' letra të numëruara'+(isPišti+', Pishpirik +10':'')+').';
+   $('lastCapture').textContent=isPišti?'✨ PISHPIRIK! +'+points+' pikë':('+'+points+' pikë');
  }else{table.push(card);$('lastCapture').textContent=''}
  turn=1-turn;
  if(hands[0].length===0&&hands[1].length===0){
    if(deck.length){for(let i=0;i<4&&deck.length;i++){hands[0].push(deck.pop());if(deck.length)hands[1].push(deck.pop())}}
-   else {if(table.length){const winner= captured[0].length>captured[1].length?0:captured[1].length>captured[0].length?1:-1;if(winner>=0)scores[winner]+=3;captured[winner<0?turn:winner].push(...table);table=[]}
+   else {if(table.length){const winner= captured[0].length>captured[1].length?0:captured[1].length>captured[0].length?1:-1;const recipient=winner<0?turn:winner;const remainingPoints=table.filter(c=>['10','J','Q','K','A'].includes(c.rank)).length;scores[recipient]+=remainingPoints;if(winner>=0)scores[winner]+=3;captured[recipient].push(...table);table=[]}
     if(scores[0]===scores[1])msg+=' Loja përfundoi barazim!';else msg+=' Fiton Lojtari '+(scores[0]>scores[1]?1:2)+'!';started=false;renderFinal(msg);return}
  }
  $('gameMessage').textContent=msg;render();
