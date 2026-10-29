@@ -37,3 +37,14 @@
 @keyframes flipPishpirik{0%{transform:rotateY(0) scale(.9)}8%{transform:rotateY(0) scale(1)}43%{transform:rotateY(180deg) scale(1)}88%{transform:rotateY(180deg) scale(1.08)}100%{transform:rotateY(180deg) scale(.96)}}
 @keyframes labelPishpirik{0%{opacity:0;transform:translateY(8px) scale(.95)}8%,88%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-5px) scale(.98)}}
 /* Pishpirik keeps its requested long reveal timing. */
+
+/* Requested timing: normal play 1s, capture 2s, Pishpirik 3s. */
+.play-animation-show{animation-duration:1s}
+.flip-inner{animation-duration:1s}
+.play-animation-label{animation-duration:1s}
+.play-animation:has(.capture-reveal).play-animation-show{animation-duration:2s}
+.capture-reveal .flip-inner{animation-duration:2s}
+.play-animation:has(.capture-reveal) .play-animation-label{animation-duration:2s}
+.play-animation.pishpirik-animation.play-animation-show{animation:revealPishpirik 3s ease both}
+.play-animation.pishpirik-animation .flip-inner{animation:flipPishpirik 3s cubic-bezier(.35,.05,.2,1) both}
+.play-animation.pishpirik-animation .play-animation-label{animation:labelPishpirik 3s ease both}
