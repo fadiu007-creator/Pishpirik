@@ -17,7 +17,7 @@ function render(){if(!started)return;
  $('handTitle').textContent=vsComputer?'Letrat e tua':'Letrat e Lojtarit '+(turn+1);
  $('remaining').textContent=deck.length+hands[0].length+hands[1].length;
  $('tableCount').textContent=table.length+' '+(table.length===1?'letër':'letra');
- $('tableCards').innerHTML=table.length?table.map(c=>cardHTML(c)).join(''):'<span class="empty-table">Tavolina është bosh</span>';
+ $('tableCards').innerHTML=table.length?('<div class="table-pile"><div class="pile-count">'+table.length+' '+(table.length===1?'letër në grumbull':'letra në grumbull')+'</div>'+cardHTML(table[table.length-1])+'</div>'):'<span class="empty-table">Tavolina është bosh</span>';
  $('handCards').innerHTML=(vsComputer?hands[0]:hands[turn]).map(c=>cardHTML(c,true)).join('');
  if(vsComputer&&turn===1){$('handCards').innerHTML=hands[1].map(()=>'<div class="card back-card">✦<span class="suit">♠</span></div>').join('');}
  [0,1].forEach(i=>{const el=$('score'+i);el.querySelector('span').textContent='Lojtari '+(i+1);el.querySelector('b').textContent=scores[i]});
@@ -25,11 +25,11 @@ function render(){if(!started)return;
 }
 function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!fromAI)return;const idx=hands[turn].findIndex(c=>c.id===id);if(idx<0)return;const card=hands[turn].splice(idx,1)[0];let msg='Letra u la në tavolinë.';
  const isPišti=table.length===1&&table[0].value===card.value;
- if(table.length&& (table[table.length-1].value===card.value||card.rank==='J')){
+ if(table.length&&table[table.length-1].value===card.value){
    const taken=[...table,card];captured[turn].push(...taken);table=[];
-   const points=(card.rank==='J'?1:0)+(isPišti?10:0);scores[turn]+=points;
-   msg='Lojtari '+(turn+1)+' i mori letrat!'+(isPišti?' PISHPIRIK! +10 pikë.':card.rank==='J'?' D-ja i merr krejt letrat.':'')+(points?' +'+points+' pikë.':'');
-   $('lastCapture').textContent=isPišti?'✨ PISHPIRIK! +10 pikë':card.rank==='J'?'D-ja i mori letrat!':'Letrat u morën';
+   const points=isPišti?10:0;scores[turn]+=points;
+   msg='Lojtari '+(turn+1)+' i mori krejt letrat në tavolinë!'+(isPišti?' PISHPIRIK! +10 pikë.':'');
+   $('lastCapture').textContent=isPišti?'✨ PISHPIRIK! +10 pikë':'Grumbulli u mor';
  }else{table.push(card);$('lastCapture').textContent=''}
  turn=1-turn;
  if(hands[0].length===0&&hands[1].length===0){
@@ -55,8 +55,8 @@ function computerMove(){
  // Prefer Pishpirik first, then a capture; otherwise play a random card.
  const ranked=hand.map(card=>{
    const pishpirik=table.length===1&&table[0].value===card.value;
-   const captures=table.length>0&&(table[table.length-1].value===card.value||card.rank==='J');
-   const score=(pishpirik?1000:0)+(captures?100:0)+(card.rank==='J'?15:0)+Math.random();
+   const captures=table.length>0&&table[table.length-1].value===card.value;
+   const score=(pishpirik?1000:0)+(captures?100:0)+Math.random();
    return {card,score};
  }).sort((a,b)=>b.score-a.score);
  play(ranked[0].card.id,true);
