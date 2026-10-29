@@ -12,6 +12,7 @@ function startGame(mode='local'){if(aiTimer){clearTimeout(aiTimer);aiTimer=null}
  // Deal four cards to each player and four cards face-up to table.
  for(let i=0;i<4;i++){hands[0].push(deck.pop());hands[1].push(deck.pop())}
  table=deck.splice(-4);$('gameMode').textContent=vsComputer?'KUNDËR KOMPJUTERIT':'LOJË LOKALE';show('game');render();$('gameMessage').textContent=vsComputer?'Ti je Lojtari 1. Bëje lëvizjen e parë.':'Lojtari 1, zgjedhe një letër.'}
+function animatePlayedCard(card,player){const el=$('playAnimation');if(!el)return;el.innerHTML='<div class="play-animation-label">'+(vsComputer&&player===1?'Kompjuteri':'Lojtari '+(player+1))+' luan</div>'+cardHTML(card)+';el.classList.remove('play-animation-show');void el.offsetWidth;el.classList.add('play-animation-show');clearTimeout(el._hideTimer);el._hideTimer=setTimeout(()=>el.classList.remove('play-animation-show'),520)}
 function render(){if(!started)return;
  $('turnLabel').textContent=vsComputer?(turn===0?'Radha jote':'Kompjuteri po mendon…'):(turn===0?'Radha e Lojtarit 1':'Radha e Lojtarit 2');
  $('handTitle').textContent=vsComputer?'Letrat e tua':'Letrat e Lojtarit '+(turn+1);
@@ -23,7 +24,7 @@ function render(){if(!started)return;
  [0,1].forEach(i=>{const el=$('score'+i);el.querySelector('span').textContent='Lojtari '+(i+1);el.querySelector('b').textContent=scores[i]});
  $('handCards').querySelectorAll('[data-card]').forEach(el=>{el.addEventListener('click',()=>play(Number(el.dataset.card)));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();play(Number(el.dataset.card))}})});
 }
-function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!fromAI)return;const idx=hands[turn].findIndex(c=>c.id===id);if(idx<0)return;const card=hands[turn].splice(idx,1)[0];let msg='Letra u la në tavolinë.';
+function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!fromAI)return;const idx=hands[turn].findIndex(c=>c.id===id);if(idx<0)return;const card=hands[turn].splice(idx,1)[0];animatePlayedCard(card,turn);let msg='Letra u la në tavolinë.';
  const isPišti=table.length===1&&table[0].value===card.value;
  const isJack=card.rank==='J';
  if(table.length&&(isJack||table[table.length-1].value===card.value)){
