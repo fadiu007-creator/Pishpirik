@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d3b2e"><meta name="description" content="Pishpirik — luaj letra me shoqni, lokalisht ose online.">
+<title>Pishpirik — Loja me letra</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./"><span class="mark">♠</span><span>Pishpirik<small>LOJA ME LETRA</small></span></a><button id="soundBtn" class="ghost" aria-label="Tingulli">♫ Tingulli: fikur</button></header>
+<main>
+<section id="home" class="hero">
+<div class="eyebrow">♣ TRADITA NË NJË LOJË</div><h1>Një dorë letra.<br><em>Shumë qejf.</em></h1><p>Luaj Pishpirik me shoqni — në të njëjtin ekran ose online me kod dhome.</p>
+<div class="mode-grid"><button class="mode-card" id="localBtn"><span class="mode-icon">🃏</span><strong>Luaj në një pajisje</strong><span>2 lojtarë, me radhë</span><b>Fillo lojën →</b></button><button class="mode-card" id="onlineBtn"><span class="mode-icon">🌐</span><strong>Luaj online</strong><span>Krijo dhomë ose bashkohu</span><b>Hape dhomën →</b></button></div>
+<div class="rules"><h3>Si luhet?</h3><p>Qëllo një letër me të njëjtën vlerë si letra në krye të grumbullit për ta marrë. D-ja (J) i merr letrat në tavolinë. Nëse tavolina ka vetëm një letër dhe e merr me të njëjtën vlerë, fiton <b>Pishpirik (+10 pikë)</b>.</p></div>
+</section>
+<section id="lobby" class="panel hidden"><button class="back" id="backBtn">← Kthehu</button><h2>Loja online</h2><p class="muted">Përdor të njëjtin kod me shokun/shoqen. Për lojë online duhet konfiguruar Supabase — udhëzimet janë në README.</p><label for="playerName">Emri yt</label><input id="playerName" maxlength="18" placeholder="p.sh. Ardi"><label for="roomCode">Kodi i dhomës</label><input id="roomCode" maxlength="8" placeholder="p.sh. ABC123" autocapitalize="characters"><div class="actions"><button class="primary" id="createRoom">Krijo dhomë</button><button class="secondary" id="joinRoom">Bashkohu</button></div><p id="onlineStatus" class="status" role="status">Online kërkon konfigurim të Supabase.</p></section>
+<section id="game" class="game hidden">
+<div class="game-head"><button class="back" id="exitBtn">← Dalje</button><div><span class="pill" id="gameMode">LOJË LOKALE</span><div id="turnLabel" class="turn">Radha e Lojtarit 1</div></div><button class="ghost" id="newGameBtn">Rifillo ↻</button></div>
+<div class="scoreboard"><div class="score" id="score0"><span>Lojtari 1</span><b>0</b><small>pikë</small></div><div class="deck-count"><span id="remaining">52</span><small>letra në lojë</small></div><div class="score" id="score1"><span>Lojtari 2</span><b>0</b><small>pikë</small></div></div>
+<div class="table-area"><div class="table-caption">TAVOLINA <span id="tableCount">0 letra</span></div><div id="tableCards" class="cards table-cards"><span class="empty-table">Tavolina është bosh</span></div><div id="lastCapture" class="capture-note"></div></div>
+<div class="hand-area"><div class="hand-label"><span id="handTitle">Letrat e Lojtarit 1</span><small>Zgjedhe një letër</small></div><div id="handCards" class="cards hand-cards"></div><div id="gameMessage" class="game-message">Zgjedhe letrën për me lujt.</div></div>
+<div class="game-footer"><span>♠ ♥ ♦ ♣</span><span>Pishpirik · Loja klasike</span></div>
+</section>
+</main>
+<div id="toast" class="toast" role="status"></div>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>
