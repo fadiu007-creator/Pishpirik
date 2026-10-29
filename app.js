@@ -8,7 +8,7 @@ function makeDeck(){return shuffle(SUITS.flatMap((s,si)=>RANKS.map((r,ri)=>({id:
 function cardHTML(c,clickable=false){return '<div class="card '+(c.red?'red':'')+'" '+(clickable?'role="button" tabindex="0" data-card="'+c.id+'" aria-label="'+c.rank+' '+c.suit+'"':'')+'><span class="corner">'+c.rank+'<br>'+c.suit+'</span><span>'+c.rank+'</span><span class="suit">'+c.suit+'</span><span class="corner bottom">'+c.rank+'<br>'+c.suit+'</span></div>'}
 function show(id){['home','lobby','game'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
-function startGame(mode='local'){if(aiTimer)clearTimeout(aiTimer);vsComputer=mode==='computer';deck=makeDeck();hands=[[],[]];table=[];scores=[0,0];captured=[[],[]];turn=0;started=true;online=false;roomChannel=null;
+function startGame(mode='local'){if(aiTimer){clearTimeout(aiTimer);aiTimer=null}vsComputer=mode==='computer';deck=makeDeck();hands=[[],[]];table=[];scores=[0,0];captured=[[],[]];turn=0;started=true;online=false;roomChannel=null;
  // Deal four cards to each player and four cards face-up to table.
  for(let i=0;i<4;i++){hands[0].push(deck.pop());hands[1].push(deck.pop())}
  table=deck.splice(-4);$('gameMode').textContent=vsComputer?'KUNDËR KOMPJUTERIT':'LOJË LOKALE';show('game');render();$('gameMessage').textContent=vsComputer?'Ti je Lojtari 1. Bëje lëvizjen e parë.':'Lojtari 1, zgjedhe një letër.'}
@@ -38,13 +38,27 @@ function play(id,fromAI=false){if(!started)return;if(vsComputer&&turn===1&&!from
     if(scores[0]===scores[1])msg+=' Loja përfundoi barazim!';else msg+=' Fiton Lojtari '+(scores[0]>scores[1]?1:2)+'!';started=false;renderFinal(msg);return}
  }
  $('gameMessage').textContent=msg;render();
- if(vsComputer&&turn===1&&started){if(aiTimer)clearTimeout(aiTimer);aiTimer=setTimeout(computerMove,650)}
+ scheduleComputerTurn();
 }
 function renderFinal(msg){render();$('turnLabel').textContent='Loja përfundoi';$('handTitle').textContent='Rezultati final';$('handCards').innerHTML='<div class="rules"><b>'+msg+'</b><br>Lojtari 1: '+scores[0]+' pikë · Lojtari 2: '+scores[1]+' pikë</div>';$('gameMessage').textContent='Shtype Rifillo për një lojë të re.';toast(scores[0]===scores[1]?'Barazim!':'Fituesi: Lojtari '+(scores[0]>scores[1]?1:2))}
+function scheduleComputerTurn(){
+ if(aiTimer){clearTimeout(aiTimer);aiTimer=null}
+ if(!started||!vsComputer||turn!==1)return;
+ $('turnLabel').textContent='Kompjuteri po mendon…';
+ $('gameMessage').textContent='Kompjuteri po zgjedh letrën…';
+ aiTimer=setTimeout(()=>{aiTimer=null;computerMove()},700);
+}
 function computerMove(){
  if(!started||!vsComputer||turn!==1)return;
- const hand=hands[1];if(!hand.length)return;
- const ranked=hand.map(card=>{const pi=table.length===1&&table[0].value===card.value;const capture=table.length>0&&(table[table.length-1].value===card.value||card.rank==='J');return {card,score:pi?100:(capture?50:0)+(card.rank==='J'?20:0)}}).sort((a,b)=>b.score-a.score);
+ const hand=hands[1];
+ if(!hand.length){$('gameMessage').textContent='Gabim me letrat e kompjuterit. Shtype Rifillo.';return}
+ // Prefer Pishpirik first, then a capture; otherwise play a random card.
+ const ranked=hand.map(card=>{
+   const pishpirik=table.length===1&&table[0].value===card.value;
+   const captures=table.length>0&&(table[table.length-1].value===card.value||card.rank==='J');
+   const score=(pishpirik?1000:0)+(captures?100:0)+(card.rank==='J'?15:0)+Math.random();
+   return {card,score};
+ }).sort((a,b)=>b.score-a.score);
  play(ranked[0].card.id,true);
 }
 function setupOnline(){show('lobby');$('onlineStatus').textContent='Për online real, plotëso Supabase URL dhe anon key te config.js dhe ekzekuto SQL nga README.'}
