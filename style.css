@@ -48,3 +48,14 @@
 .play-animation.pishpirik-animation.play-animation-show{animation:revealPishpirik 3s ease both}
 .play-animation.pishpirik-animation .flip-inner{animation:flipPishpirik 3s cubic-bezier(.35,.05,.2,1) both}
 .play-animation.pishpirik-animation .play-animation-label{animation:labelPishpirik 3s ease both}
+
+/* Latest requested timing: normal 0.5s, capture 1s, Pishpirik 2s. */
+.play-animation-show{animation-duration:.5s}
+.flip-inner{animation-duration:.5s}
+.play-animation-label{animation-duration:.5s}
+.play-animation:has(.capture-reveal).play-animation-show{animation-duration:1s}
+.capture-reveal .flip-inner{animation-duration:1s}
+.play-animation:has(.capture-reveal) .play-animation-label{animation-duration:1s}
+.play-animation.pishpirik-animation.play-animation-show{animation:revealPishpirik 2s ease both}
+.play-animation.pishpirik-animation .flip-inner{animation:flipPishpirik 2s cubic-bezier(.35,.05,.2,1) both}
+.play-animation.pishpirik-animation .play-animation-label{animation:labelPishpirik 2s ease both}
