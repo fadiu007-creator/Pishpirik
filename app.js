@@ -12,7 +12,7 @@ function startGame(mode='local'){if(aiTimer){clearTimeout(aiTimer);aiTimer=null}
  // Deal four cards to each player and four cards face-up to table.
  for(let i=0;i<4;i++){hands[0].push(deck.pop());hands[1].push(deck.pop())}
  table=deck.splice(-4);$('gameMode').textContent=vsComputer?'KUNDËR KOMPJUTERIT':'LOJË LOKALE';show('game');render();$('gameMessage').textContent=vsComputer?'Ti je Lojtari 1. Bëje lëvizjen e parë.':'Lojtari 1, zgjedhe një letër.'}
-function animatePlayedCard(card,player){const el=$('playAnimation');if(!el)return;el.innerHTML='<div class="play-animation-label">'+(vsComputer&&player===1?'Kompjuteri':'Lojtari '+(player+1))+' luan</div>'+cardHTML(card)+';el.classList.remove('play-animation-show');void el.offsetWidth;el.classList.add('play-animation-show');clearTimeout(el._hideTimer);el._hideTimer=setTimeout(()=>el.classList.remove('play-animation-show'),520)}
+function animatePlayedCard(card,player){const el=$('playAnimation');if(!el)return;el.innerHTML='<div class="play-animation-label">'+(vsComputer&&player===1?'Kompjuteri':'Lojtari '+(player+1))+' luan</div>'+cardHTML(card);el.classList.remove('play-animation-show');void el.offsetWidth;el.classList.add('play-animation-show');clearTimeout(el._hideTimer);el._hideTimer=setTimeout(()=>el.classList.remove('play-animation-show'),520)}
 function render(){if(!started)return;
  $('turnLabel').textContent=vsComputer?(turn===0?'Radha jote':'Kompjuteri po mendon…'):(turn===0?'Radha e Lojtarit 1':'Radha e Lojtarit 2');
  $('handTitle').textContent=vsComputer?'Letrat e tua':'Letrat e Lojtarit '+(turn+1);
